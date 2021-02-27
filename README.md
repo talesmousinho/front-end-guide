@@ -39,12 +39,14 @@ If your company is exploring a modern JavaScript stack as well, you may find thi
   - [Testing](#testing---jest--enzyme)
   - [Linting JavaScript](#linting-javascript---eslint)
   - [Linting CSS](#linting-css---stylelint)
+  - [Formatting Code](#formatting-code---prettier)
   - [Types](#types---flow)
 - [Build System](#build-system---webpack)
 - [Package Management](#package-management---yarn)
 - [Continuous Integration](#continuous-integration)
-- [Hosting](#hosting---amazon-s3)
+- [Hosting and CDN](#hosting-and-cdn)
 - [Deployment](#deployment)
+- [Monitoring](#monitoring)
 
 Certain topics can be skipped if you have prior experience in them.
 
@@ -64,7 +66,7 @@ The downsides:
 
 - Heavier initial page load due to loading of framework, app code, and assets required for multiple pages.<sup><a href="#fn1" id="ref1">1</a></sup>
 - There's an additional step to be done on your server which is to configure it to route all requests to a single entry point and allow client-side routing to take over from there.
-- SPAs are reliant on JavaScript to render content, but not all search engines execute JavaScript during crawling, and they may see empty content on your page. This inadvertently hurts the SEO of your app. <sup><a href="#fn2" id="ref2">2</a></sup>
+- SPAs are reliant on JavaScript to render content, but not all search engines execute JavaScript during crawling, and they may see empty content on your page. This inadvertently hurts the Search Engine Optimization (SEO) of your app. <sup><a href="#fn2" id="ref2">2</a></sup>. However, most of the time, when you are building apps, SEO is not the most important factor, as not all the content needs to be indexable by search engines. To overcome this, you can either server-side render your app or use services such as [Prerender](https://prerender.io/) to "render your javascript in a browser, save the static HTML, and return that to the crawlers".
 
 While traditional server-side rendered apps are still a viable option, a clear client-server separation scales better for larger engineering teams, as the client and server code can be developed and released independently. This is especially so at Grab when we have multiple client apps hitting the same API server.
 
@@ -84,7 +86,7 @@ Before you dive into the various aspects of building a JavaScript web app, it is
 
 Prior to 2015, the last major update was ECMAScript 5.1, in 2011. However, in the recent years, JavaScript has suddenly seen a huge burst of improvements within a short span of time. In 2015, ECMAScript 2015 (previously called ECMAScript 6) was released and a ton of syntactic constructs were introduced to make writing code less unwieldy. If you are curious about it, Auth0 has written a nice article on the [history of JavaScript](https://auth0.com/blog/a-brief-history-of-javascript/). Till this day, not all browsers have fully implemented the ES2015 specification. Tools such as [Babel](https://babeljs.io/) enable developers to write ES2015 in their apps and Babel transpiles them down to ES5 to be compatible for browsers.
 
-Being familiar with both ES5 and ES2015 is crucial. ES2015 is still relatively new and a lot of open source code and Node.js apps are still written in ES5. If you are doing debugging in your browser console, you might not be able to use ES2015 syntax. On the other hand, documentation and example code for many modern libraries that we will introduce later below are still written in ES2015. At Grab, we use use [babel-preset-env](https://github.com/babel/babel-preset-env) to enjoy the productivity boost from the syntactic improvements the future of JavaScript provides and we have been loving it so far. `babel-preset-env` intelligently determines which Babel plugins are necessary (which new language features are not supported and have to be transpiled) as browsers increase native support for more ES language features.
+Being familiar with both ES5 and ES2015 is crucial. ES2015 is still relatively new and a lot of open source code and Node.js apps are still written in ES5. If you are doing debugging in your browser console, you might not be able to use ES2015 syntax. On the other hand, documentation and example code for many modern libraries that we will introduce later below are still written in ES2015. At Grab, we use [babel-preset-env](https://github.com/babel/babel-preset-env) to enjoy the productivity boost from the syntactic improvements the future of JavaScript provides and we have been loving it so far. `babel-preset-env` intelligently determines which Babel plugins are necessary (which new language features are not supported and have to be transpiled) as browsers increase native support for more ES language features. If you prefer using language features that are already stable, you may find that [babel-preset-stage-3](https://babeljs.io/docs/plugins/preset-stage-3/), which is a complete specification that will most likely be implemented in browsers, will be more suitable.
 
 Spend a day or two revising ES5 and exploring ES2015. The more heavily used features in ES2015 include "Arrows and Lexical This", "Classes", "Template Strings", "Destructuring", "Default/Rest/Spread operators", and "Importing and Exporting modules".
 
@@ -93,9 +95,11 @@ Spend a day or two revising ES5 and exploring ES2015. The more heavily used feat
 #### Study Links
 
 - [Learn ES5 on Codecademy](https://www.codecademy.com/learn/learn-javascript)
+- [Learn ES6 on Codecademy](https://www.codecademy.com/learn/introduction-to-javascript)
 - [Learn ES2015 on Babel](https://babeljs.io/learn-es2015/)
 - [ES6 Katas](http://es6katas.org/)
 - [You Don't Know JS](https://github.com/getify/You-Dont-Know-JS) (Advanced content, optional for beginners)
+- [Answers to Front End Job Interview Questions — JavaScript](https://github.com/yangshun/front-end-interview-handbook/blob/master/questions/javascript-questions.md)
 
 ## User Interface - React
 
@@ -119,7 +123,7 @@ React brings about many radical ideas and encourages developers to [rethink best
 
 Over the years, new view libraries that are even more performant than React have emerged. React may not be the fastest library out there, but in terms of the ecosystem, overall usage experience and benefits, it is still one of the greatest. Facebook is also channeling efforts into making React even faster with a [rewrite of the underlying reconciliation algorithm](https://github.com/acdlite/react-fiber-architecture). The concepts that React introduced has taught us how to write better code, more maintainable web apps and made us better engineers. We like that.
 
-We recommend going through the [tutorial](https://facebook.github.io/react/tutorial/tutorial.html) on building a tic-tac-toe game on the React homepage to get a feel of what React is and what it does. For more in-depth learning, check out the highly-rated free course, [React Fundamentals](https://reacttraining.com/online/react-fundamentals) by the creators of [React Router](https://github.com/ReactTraining/react-router/), who are experts from the React community. It also covers more advanced concepts that are not covered by the React documentation. [Create React App](https://github.com/facebookincubator/create-react-app) by Facebook is a tool to scaffold a React project with minimal configuration and is highly recommended to use for starting new React projects.
+We recommend going through the [tutorial](https://facebook.github.io/react/tutorial/tutorial.html) on building a tic-tac-toe game on the React homepage to get a feel of what React is and what it does. For more in-depth learning, check out the Egghead course, [Build Your First Production Quality React App](https://egghead.io/courses/build-your-first-production-quality-react-app). It covers some advanced concepts and real-world usages that are not covered by the React documentation. [Create React App](https://github.com/facebookincubator/create-react-app) by Facebook is a tool to scaffold a React project with minimal configuration and is highly recommended to use for starting new React projects.
 
 React is a library, not a framework, and does not deal with the layers below the view - the app state. More on that later.
 
@@ -128,7 +132,7 @@ React is a library, not a framework, and does not deal with the layers below the
 #### Study Links
 
 - [React Official Tutorial](https://facebook.github.io/react/tutorial/tutorial.html)
-- [React Fundamentals](https://reacttraining.com/online/react-fundamentals)
+- [Egghead Course - Build Your First Production Quality React App](https://egghead.io/courses/build-your-first-production-quality-react-app)
 - [Simple React Development in 2017](https://hackernoon.com/simple-react-development-in-2017-113bd563691f)
 - [Presentational and Container Components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.5iexphyg5)
 
@@ -169,7 +173,7 @@ While Redux does not necessarily have to be used with React, it is highly recomm
 
 - **Functional composition paradigm** - React composes views (pure functions) while Redux composes pure reducers (also pure functions). Output is predictable given the same set of input.
 - **Easy To Reason About** - You may have heard this term many times but what does it actually mean? We interpret it as having control and understanding over our code - Our code behaves in ways we expect it to, and when there are problems, we can find them easily. Through our experience, React and Redux makes debugging simpler. As the data flow is unidirectional, tracing the flow of data (server responses, user input events) is easier and it is straightforward to determine which layer the problem occurs in.
-- **Layered Structure** - Each layer in the app / Flux architecture is a pure function, and has clear responsibilities. It is relatively easy to write tests for pure functions.
+- **Layered Structure** - Each layer in the app / Flux architecture is a pure function, and has clear responsibilities. It is relatively easy to write tests for pure functions. You have to centralize changes to your app within the reducer, and the only way to trigger a change is to dispatch an action.
 - **Development Experience** - A lot of effort has gone into creating tools to help in debugging and inspecting the app while development, such as [Redux DevTools](https://github.com/gaearon/redux-devtools). <br> ![Redux Devtools Demo](images/redux-devtools-demo.gif)
 
 Your app will likely have to deal with async calls like making remote API requests. [redux-thunk](https://github.com/gaearon/redux-thunk) and [redux-saga](https://github.com/redux-saga/redux-saga) were created to solve those problems. They may take some time to understand as they require understanding of functional programming and generators. Our advice is to deal with it only when you need it.
@@ -214,7 +218,8 @@ If you are a total beginner to CSS, Codecademy's [HTML & CSS course](https://www
 - [SUIT CSS](http://suitcss.github.io/)
 - [CSS Modules Specification](https://github.com/css-modules/css-modules)
 - [Sass Homepage](http://sass-lang.com/)
-- [A pattern for writing CSS to scale](http://www.intelligiblebabble.com/a-pattern-for-writing-css-to-scale)
+- [Answers to Front End Job Interview Questions — HTML](https://github.com/yangshun/tech-interview-handbook/blob/master/front-end/interview-questions.md#html-questions)
+- [Answers to Front End Job Interview Questions — CSS](https://github.com/yangshun/tech-interview-handbook/blob/master/front-end/interview-questions.md#css-questions)
 
 #### Alternatives
 
@@ -223,7 +228,7 @@ If you are a total beginner to CSS, Codecademy's [HTML & CSS course](https://www
 
 ## Maintainability
 
-Code is read more frequently than it is written. This is especially true at Grab, where the team size is large and we have multiple engineers working across multiple projects. We highly value readability, maintainability and stability of the code and there are a few ways to achieve that: "Extensive testing", "Consistent coding style" and "Typechecking".
+Code is read more frequently than it is written. This is especially true at Grab, where the team size is large and we have multiple engineers working across multiple projects. We highly value readability, maintainability and stability of the code and there are a few ways to achieve that: "Extensive testing", "Consistent coding style" and "Typechecking". Also when you are in a team, sharing same practices becomes really important. Check out these [JavaScript Project Guidelines](https://github.com/wearehive/project-guidelines) for instance.
 
 ## Testing - Jest + Enzyme
 
@@ -270,8 +275,9 @@ For the most part, using ESLint is as simple as tweaking a configuration file in
 
 #### Alternatives
 
-- [Standard](https://github.com/feross/standard)
+- [Standard](https://github.com/standard/standard)
 - [JSHint](http://jshint.com/)
+- [XO](https://github.com/xojs/xo)
 
 ## Linting CSS - stylelint
 
@@ -296,6 +302,24 @@ One downside of stylelint is that the autofix feature is not fully mature yet, a
 
 - [Sass Lint](https://github.com/sasstools/sass-lint)
 - [CSS Lint](http://csslint.net/)
+
+## Formatting Code - Prettier
+
+<img alt="Prettier Logo" src="https://cdn.rawgit.com/grab/front-end-guide/master/images/prettier-logo.png" width="256px" />
+
+Another tool for enforcing consistent coding style for JavaScript and CSS is [Prettier](https://github.com/prettier/prettier).
+
+In most cases, it is recommended to setup Prettier on top of ESLint and stylelint and integrate it into the workflow. This allows the code to be formatted into consistent style automatically via commit hooks, so that developers do not need to spend time formatting the coding style manually.
+
+Note that Prettier only enforces coding style, but does not check for logic errors in the code. Hence it is not a replacement for linters.
+
+**Estimated Duration: 1/2 day.** Nothing much to learn here. Add Prettier to your project and add hooks to enforce the coding style!
+
+#### Study Links
+
+- [Prettier Homepage](https://prettier.io/)
+- [Prettier GitHub repo](https://github.com/prettier/prettier)
+- [Comparison between tools that allow you to use ESLint and Prettier together](https://gist.github.com/yangshun/318102f525ec68033bf37ac4a010eb0c)
 
 ## Types - Flow
 
@@ -343,6 +367,7 @@ We have found the [webpack walkthrough](https://survivejs.com/webpack/foreword/)
 
 - [Rollup](https://rollupjs.org/)
 - [Browserify](http://browserify.org/)
+- [Parcel](https://parceljs.org/)
 
 ## Package Management - Yarn
 
@@ -371,7 +396,7 @@ npm@5.0.0 was [released in May 2017](https://github.com/npm/npm/releases/tag/v5.
 
 ## Continuous Integration
 
-We use [Travis CI](https://travis-ci.com/) for our continuous integration (CI) pipeline. Travis is a highly popular CI on Github and its [build matrix](https://docs.travis-ci.com/user/customizing-the-build#Build-Matrix) feature is useful for repositories which contain multiple projects like Grab's. We configured Travis to do the following:
+We used [Travis CI](https://travis-ci.com/) for our continuous integration (CI) pipeline. Travis is a highly popular CI on Github and its [build matrix](https://docs.travis-ci.com/user/customizing-the-build#Build-Matrix) feature is useful for repositories which contain multiple projects like Grab's. We configured Travis to do the following:
 
 - Run linting for the project.
 - Run unit tests for the project.
@@ -390,8 +415,9 @@ We use [Travis CI](https://travis-ci.com/) for our continuous integration (CI) p
 
 - [Jenkins](https://jenkins.io/)
 - [CircleCI](https://circleci.com/)
+- [GitLab CI/CD](https://about.gitlab.com/product/continuous-integration/)
 
-## Hosting - Amazon S3
+## Hosting and CDN
 
 Traditionally, web servers that receive a request for a webpage will render the contents on the server, and return a HTML page with dynamic content meant for the requester. This is known as server-side rendering. As mentioned earlier in the section on Single-page Apps, modern web applications do not involve server-side rendering, and it is sufficient to use a web server that serves static asset files. Nginx and Apache are possible options and not much configuration is required to get things up and runnning. The caveat is that the web server will have to be configured to route all requests to a single entry point and allow client-side routing to take over. The flow for front end routing goes like this:
 
@@ -401,11 +427,13 @@ Traditionally, web servers that receive a request for a webpage will render the 
 1. The client-side routing library reads the current route, and communicates to the MVC (or equivalent where relevant) framework about the current route.
 1. The MVC JavaScript framework renders the desired view based on the route, possibly after fetching data from an API if required. Example, load up `UsersController`, fetch user data for the username `john` as JSON, combine the data with the view, and render it on the page.
 
-A good practice for serving static content is to use caching and putting them on a CDN. We use [Amazon Simple Storage Service (S3)](https://aws.amazon.com/s3/) because it can both host and act as a CDN for our static website content. We find that it is an affordable and reliable solution that meets our needs. S3 provides the option to "Use this bucket to host a website", which essentially directs the requests for all routes to the root of the bucket, which means we do not need our own web servers with special routing configurations.
+A good practice for serving static content is to use caching and putting them on a CDN. We use [Amazon Simple Storage Service (S3)](https://aws.amazon.com/s3/) for hosting our static website content and [Amazon CloudFront](https://aws.amazon.com/cloudfront/) as the CDN. We find that it is an affordable and reliable solution that meets our needs.
+
+S3 provides the option to "Use this bucket to host a website", which essentially directs the requests for all routes to the root of the bucket, which means we do not need our own web servers with special routing configurations.
 
 An example of a web app that we host on S3 is [Hub](https://hub.grab.com/).
 
-Other than hosting the website, we also use S3 to host the build `.tar` files generated from each successful Travis build.
+Other than hosting the website, we also use S3 to host the build `.tar` files generated from each successful CI build.
 
 #### Study Links
 
@@ -419,7 +447,7 @@ Other than hosting the website, we also use S3 to host the build `.tar` files ge
 
 ## Deployment
 
-The last step in shipping the product to our users is deployment. We use [Ansible Tower](https://www.ansible.com/tower) which is a powerful automation software that enables us to deploy our builds easily.
+The last step in shipping the product to our users is deployment. We used [Ansible Tower](https://www.ansible.com/tower) which is a powerful automation software that enables us to deploy our builds easily.
 
 As mentioned earlier, all our commits, upon successful build, are being uploaded to a central S3 bucket for builds. We follow semver for our releases and have commands to automatically generate release notes for the latest release. When it is time to release, we run a command to tag the latest commit and push to our code hosting environment. Travis will run the CI steps on that tagged commit and upload a tar file (such as `1.0.1.tar`) with the version to our S3 bucket for builds.
 
@@ -435,6 +463,20 @@ This whole process is done under 30 seconds and using Tower has made deployments
 #### Study Links
 
 - [Ansible Tower Homepage](https://www.ansible.com/tower)
+
+#### Alternatives
+
+- [Jenkins](https://jenkins.io/)
+
+## Monitoring
+
+After shipping the product, you would also want to monitor it for any errors.
+
+Apart from network level monitoring from our CDN service provider and hosting provider, we use [Sentry](https://sentry.io/) to monitor errors that originates from the app logic.
+
+#### Study Links
+
+- [Sentry Homepage](https://sentry.io/)
 
 ### The Journey has Just Begun
 
